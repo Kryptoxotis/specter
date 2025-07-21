@@ -1,16 +1,20 @@
 const OpenAI = require("openai");
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+async function respond(message) {
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo", // Change to your preferred model
+      messages: [
+        { role: "system", content: "You are Spectre, an autonomous senior developer and planner. Follow all rules and structure as described in the project." },
+        { role: "user", content: message }
+      ]
+    });
+    return response.choices[0].message.content;
+  } catch (err) {
+    console.error("Spectre error:", err);
+    return "[Spectre error: " + err.message + "]";
+  }
+}
 
-// The rest of your code, converted to CommonJS:
-// - Replace all `import ... from ...` with `const ... = require(...)`
-// - Replace all `export default ...` or `export { ... }` with `module.exports = ...`
-// - If you use top-level await, wrap it in an async function and export a function instead
-
-// Example export for compatibility with server.js:
-module.exports = {
-  openai,
-  // ...add other exports as needed
-};
+module.exports = { respond };
