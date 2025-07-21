@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spectre Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #181818; color: #eee; margin: 0; padding: 0; }
+    #chat { max-width: 600px; margin: 40px auto; background: #222; border-radius: 8px; padding: 24px; box-shadow: 0 2px 8px #0008; }
+    #messages { min-height: 200px; margin-bottom: 16px; }
+    .msg { margin: 8px 0; }
+    .user { color: #8ecae6; }
+    .spectre { color: #ffb703; }
+    #input { width: 80%; padding: 8px; border-radius: 4px; border: none; }
+    #send { padding: 8px 16px; border-radius: 4px; border: none; background: #219ebc; color: #fff; cursor: pointer; }
+    #send:hover { background: #126782; }
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <h2>Spectre Chat</h2>
+    <div id="messages"></div>
+    <input id="input" type="text" placeholder="Type your message..." autofocus />
+    <button id="send">Send</button>
+  </div>
+  <script>
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('input');
+    const send = document.getElementById('send');
+    function addMsg(text, who) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + who;
+      div.textContent = (who === 'user' ? 'You: ' : 'Spectre: ') + text;
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+    send.onclick = async () => {
+      const text = input.value.trim();
+      if (!text) return;
+      addMsg(text, 'user');
+      input.value = '';
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      addMsg(data.reply || '[No reply]', 'spectre');
+    };
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') send.onclick(); });
+  </script>
+</body>
+</html>
