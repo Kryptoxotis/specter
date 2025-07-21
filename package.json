@@ -1,0 +1,12 @@
+{
+  "name": "specter",
+  "version": "1.0.0",
+  "description": "Spectre.js: Autonomous dev agent with chat web UI, ready for Railway deployment.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
